@@ -17,8 +17,7 @@ public class FormPage extends BasePage {
     private final static String SUBMIT_BTN_SELECTOR = ".btn.btn-lg.btn-primary";
 
 
-
-    public void fillOutTheForm(WebDriver driver){
+    public void fillOutTheForm(WebDriver driver) {
         driver.findElement(By.cssSelector(FIRST_NAME_SELECTOR)).sendKeys("Genowefa");
         driver.findElement(By.cssSelector(LAST_NAME_SELECTOR)).sendKeys("Węgieł");
         driver.findElement(By.cssSelector(JOB_TITLE_SELECTOR)).sendKeys("Architect");
@@ -31,7 +30,8 @@ public class FormPage extends BasePage {
         driver.findElement(By.cssSelector(SUBMIT_BTN_SELECTOR)).click();
 
     }
-    public void openPage(WebDriver driver){
+
+    public void openPage(WebDriver driver) {
         driver.get(URL);
     }
 
