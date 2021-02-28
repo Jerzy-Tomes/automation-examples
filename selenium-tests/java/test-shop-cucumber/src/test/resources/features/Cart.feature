@@ -1,7 +1,7 @@
 Feature: Cart
 
   Background:
-    Given the web browser is on the http://skleptest.pl/ page
+    Given the web browser is on the shop page
 
   Scenario: Adding a product to cart
     When user adds to cart a product
