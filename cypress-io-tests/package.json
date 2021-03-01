@@ -1,0 +1,14 @@
+{
+  "name": "cypress-io-tests",
+  "version": "1.0.0",
+  "description": "Here will be Cypress.io tests analogical to those in selenium-tests folder",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "cypress": "^6.5.0"
+  }
+}
