@@ -11,6 +11,7 @@ Feature: Cart
     Scenario: Add to cart two products
       When user adds to cart a product
       And adds another one
+      And views the cart
       Then 2 products can be found in cart
 
     Scenario: Remove product from cart

@@ -1,5 +1,9 @@
 package stepdefs;
+
+
+import helpers.Helpers;
 import io.cucumber.java.After;
+import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -7,67 +11,81 @@ import io.cucumber.java.en.When;
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.interactions.Action;
-import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import pages.CartPage;
+import pages.MainPage;
 
 public class MyStepdefs {
     private static final String BASE_URL = "http://skleptest.pl";
-    private static final String  BTN_SELECTOR = "div.col-sm-9:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > a:nth-child(3)";
+    private static final String PRODUCT_1_SELECTOR = "div.col-sm-9:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > a:nth-child(3)";
+    private static final String PRODUCT_2_SELECTOR = "div.col-sm-9:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > a:nth-child(3)";
 
     WebDriver driver;
+    MainPage mainPage;
+    CartPage cart;
+
+    @Before
+    public void setUp() {
+        driver = new FirefoxDriver();
+        mainPage = new MainPage(driver);
+        cart = new CartPage(driver);
+    }
+
     @Given("the web browser is on the shop page")
     public void theWebBrowserIsOnThePage() {
-        driver = new FirefoxDriver();
-        driver.get(BASE_URL);
+        mainPage.open();
+
     }
 
     @When("user adds to cart a product")
     public void userAddsToCartAProduct() {
-        WebDriverWait wait = new WebDriverWait(driver, 30);
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(BTN_SELECTOR)));
-        WebElement addBtn = driver.findElement(By.cssSelector(BTN_SELECTOR));
-        Actions actions = new Actions(driver);
-        actions.moveToElement(addBtn);
-        driver.findElement(By.cssSelector(BTN_SELECTOR)).click();
+        mainPage.addToCart(PRODUCT_1_SELECTOR);
     }
 
     @And("views the cart")
-    public void viewsTheCart() {
-        driver.findElement(By.cssSelector(".top-cart > a:nth-child(1)")).click();
+    public void viewsTheCart() throws InterruptedException {
+        //page can be little slow sometimes so added some sleep to make it pass
+        Thread.sleep(1000);
+        mainPage.viewTheCart();
     }
 
     @Then("the product can be found in cart")
     public void theProductCanBeFoundInCart() {
-        Assert.assertFalse(isElementPresent(By.cssSelector(".cart-empty")));
+        boolean isEmpty = cart.checkIfEmpty();
+        Assert.assertFalse(isEmpty);
     }
 
     @And("adds another one")
-    public void addsAnotherOne() {
+    public void addsAnotherOne() throws InterruptedException {
+        Thread.sleep(1000); //it's not a good practice but the page is intentionally buggy and slow, and I want my tests to run
+        mainPage.addToCart(PRODUCT_2_SELECTOR);
     }
 
     @Then("{int} products can be found in cart")
-    public void productsCanBeFoundInCart(int arg0) {
+    public void productsCanBeFoundInCart(int expected) {
+        int numberOfProducts = cart.getNumberOfProducts();
+        Assert.assertEquals(expected, numberOfProducts);
     }
 
-    @Given("there's at least one product in cart")
-    public void thereSAtLeastOneProductInCart() {
+    @Given("there's at least one product in cart") //TODO probably need to change it to something more precise
+    public void thereSAtLeastOneProductInCart()  {
+        theWebBrowserIsOnThePage();
+        userAddsToCartAProduct(); //TODO scenarios should be independent
     }
 
     @When("user views the cart")
-    public void userViewsTheCart() {
+    public void userViewsTheCart() throws InterruptedException {
+        viewsTheCart();
     }
 
     @And("removes a product from cart")
     public void removesAProductFromCart() {
+        cart.removeProduct(); //TODO remove concrete product. this will only remove first product
     }
 
     @Then("product is no longer in cart")
     public void productIsNoLongerInCart() {
+        Assert.assertTrue(cart.checkIfEmpty()); //it WILL fail -- removing not implemented
     }
 
     @And("performs {string}")
@@ -95,17 +113,9 @@ public class MyStepdefs {
     }
 
     @After
-    public void tearDown(){
+    public void tearDown() {
         driver.close();
     }
 
 
-    public boolean isElementPresent(By by) {
-        try {
-            driver.findElement(by);
-            return true;
-        }
-        catch (org.openqa.selenium.NoSuchElementException e) {
-            return false;
-        }
-    }}
+}
