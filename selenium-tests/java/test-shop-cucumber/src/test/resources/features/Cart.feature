@@ -24,7 +24,7 @@ Feature: Cart
     Given there's at least one product in cart
     When user views the cart
     And performs "<change in quantity>"
-    Then product quantity changes accurately
+    Then product quantity changes accurately by "<change in quantity>"
     Examples: changes
       | change in quantity |
       | +                  |

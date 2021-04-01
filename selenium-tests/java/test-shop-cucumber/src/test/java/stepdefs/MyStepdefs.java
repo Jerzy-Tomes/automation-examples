@@ -67,10 +67,10 @@ public class MyStepdefs {
         Assert.assertEquals(expected, numberOfProducts);
     }
 
-    @Given("there's at least one product in cart") //TODO probably need to change it to something more precise
+    @Given("there's at least one product in cart")
     public void thereSAtLeastOneProductInCart()  {
         theWebBrowserIsOnThePage();
-        userAddsToCartAProduct(); //TODO scenarios should be independent
+        mainPage.addToCart(PRODUCT_1_SELECTOR);
     }
 
     @When("user views the cart")
@@ -80,7 +80,7 @@ public class MyStepdefs {
 
     @And("removes a product from cart")
     public void removesAProductFromCart() {
-        cart.removeProduct(); //TODO remove concrete product. this will only remove first product
+        cart.removeProduct();
     }
 
     @Then("product is no longer in cart")
@@ -90,10 +90,13 @@ public class MyStepdefs {
 
     @And("performs {string}")
     public void performs(String arg0) {
+        // if arg0 == "-": click minus
+        // if arg0 == "+": click plus
     }
 
-    @Then("product quantity changes accurately")
-    public void productQuantityChangesAccurately() {
+    @Then("product quantity changes accurately by {string}")
+    public void productQuantityChangesAccuratelyBy(String arg0) {
+        // change +1 if "+" or -1 if "-"
     }
 
     @When("user proceeds to checkout")
@@ -116,6 +119,7 @@ public class MyStepdefs {
     public void tearDown() {
         driver.close();
     }
+
 
 
 }
