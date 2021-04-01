@@ -1,2 +1,2 @@
 # automation-examples
-Some Python scripting, Selenium and Cypress.io examples.
+Some Selenium and Cypress.io examples.
